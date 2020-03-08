@@ -23,14 +23,20 @@ from fblogin import views
 from fblogin.views import ApiEndpoint
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
- #   path('', include('fblogin.urls')),
-    path('secret/', views.secret_page, name='secret'),
     url(r'^api-auth/', include('rest_framework.urls')),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    url(r'^auth/', include('rest_framework_social_oauth2.urls')),
-    path('api/hello', ApiEndpoint.as_view()),
+    path('', include('fblogin.urls')),
+    path('api/auth/oauth/', include('rest_framework_social_oauth2.urls')),
 
+    path('admin/', admin.site.urls),
+    path("o/", include('oauth2_provider.urls', namespace='oauth2_provider')),
+
+   # url(r'^auth/', include('rest_framework_social_oauth2.urls')),
+
+
+
+    # url(r'^auth/', include('rest_framework_social_oauth2.urls')),
+
+    path('api/hello', ApiEndpoint.as_view()),
 
 ]
 
@@ -39,6 +45,7 @@ oauth2_endpoint_views = [
     path('authorize/', oauth2_views.AuthorizationView.as_view(), name="authorize"),
     path('token/', oauth2_views.TokenView.as_view(), name="token"),
     path('revoke-token/', oauth2_views.RevokeTokenView.as_view(), name="revoke-token"),
+
 ]
 
 if settings.DEBUG:
@@ -55,8 +62,5 @@ if settings.DEBUG:
     oauth2_endpoint_views += [
         path('authorized-tokens/', oauth2_views.AuthorizedTokensListView.as_view(), name="authorized-token-list"),
         path('authorized-tokens/<pk>/delete/', oauth2_views.AuthorizedTokenDeleteView.as_view(),
-            name="authorized-token-delete"),
+             name="authorized-token-delete"),
     ]
-
-
-
