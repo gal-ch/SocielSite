@@ -1,9 +1,14 @@
-from django.conf.urls import url
-from django.urls import path, include
+from django.urls import path
 
-from fblogin.views import FacebookLogin, FacebookConnect
+from fblogin import views
+from fblogin.views import UserList, UserDetails, GroupList
+from django.contrib.auth import views as auth_views
 
+app_name = 'fblogin'
 urlpatterns = [
-    url(r'^rest-auth/facebook/$', FacebookLogin.as_view(), name='fb_login'),
-    url(r'^rest-auth/facebook/connect/$', FacebookConnect.as_view(), name='fb_connect')
+    #   path('accounts/login/', auth_views.LoginView.as_view()),
+    path('secret', views.secret_page, name='secret'),
+    path('users/', UserList.as_view()),
+    path('users/<pk>/', UserDetails.as_view()),
+    path('groups/', GroupList.as_view()),
 ]
