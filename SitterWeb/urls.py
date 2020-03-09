@@ -1,42 +1,21 @@
-"""SitterWeb URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-
-from django.contrib import admin
-from django.urls import path, include
-from django.conf.urls import url
 import oauth2_provider.views as oauth2_views
 from django.conf import settings
 from fblogin import views
-from fblogin.views import ApiEndpoint
+from fblogin.views import ApiEndpoint, UserList, UserDetails, GroupList
+from django.urls import path, include
+from django.contrib import admin
+admin.autodiscover()
+
 
 urlpatterns = [
-    url(r'^api-auth/', include('rest_framework.urls')),
-    path('', include('fblogin.urls')),
-    path('api/auth/oauth/', include('rest_framework_social_oauth2.urls')),
-
     path('admin/', admin.site.urls),
-    path("o/", include('oauth2_provider.urls', namespace='oauth2_provider')),
-
-   # url(r'^auth/', include('rest_framework_social_oauth2.urls')),
-
-
-
-    # url(r'^auth/', include('rest_framework_social_oauth2.urls')),
-
-    path('api/hello', ApiEndpoint.as_view()),
+    path('', include('fblogin.urls')),
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('api/hello', ApiEndpoint.as_view()),  # an example resource endpoint
+    path('secret/', views.secret_page, name='secret'),
+    path('users/', UserList.as_view()),
+    path('users/<pk>/', UserDetails.as_view()),
+    path('groups/', GroupList.as_view()),
 
 ]
 
@@ -45,7 +24,6 @@ oauth2_endpoint_views = [
     path('authorize/', oauth2_views.AuthorizationView.as_view(), name="authorize"),
     path('token/', oauth2_views.TokenView.as_view(), name="token"),
     path('revoke-token/', oauth2_views.RevokeTokenView.as_view(), name="revoke-token"),
-
 ]
 
 if settings.DEBUG:
@@ -62,5 +40,5 @@ if settings.DEBUG:
     oauth2_endpoint_views += [
         path('authorized-tokens/', oauth2_views.AuthorizedTokensListView.as_view(), name="authorized-token-list"),
         path('authorized-tokens/<pk>/delete/', oauth2_views.AuthorizedTokenDeleteView.as_view(),
-             name="authorized-token-delete"),
+            name="authorized-token-delete"),
     ]
