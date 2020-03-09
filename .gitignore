@@ -1,5 +1,18 @@
 .DS_Store
 /SitterWeb/secrets.py
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.log
+*.pot
+*.pyc
+__pycache__/
 
-#.db.sqlite3
-.db.sqlite3
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media
