@@ -1,27 +1,23 @@
-from oauth2_provider.views.generic import ProtectedResourceView
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 from rest_framework import generics, permissions, serializers, status
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 from django.contrib.auth.models import User, Group
-from django.contrib import admin
-from fblogin.serializers import UserSerializer, GroupSerializer, SocialSerializer
-
-admin.autodiscover()
-
-
-class ApiEndpoint(ProtectedResourceView):
-    def get(self, request, *args, **kwargs):
-        return HttpResponse('Hello, OAuth2!')
+from fblogin.serializers import FacebookSerializer, GroupSerializer
+from rest_framework.response import Response
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from rest_auth.registration.views import SocialLoginView
 
 
-@login_required()
-def secret_page(request, *args, **kwargs):
-    return HttpResponse('Secret contents!', status=200)
+class FacebookLogin(SocialLoginView):
+    adapter_class = FacebookOAuth2Adapter
+
+
+def home(request):
+    return render(request, 'home.html')
 
 
 class UserList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated, TokenHasReadWriteScope]
+    permission_classes = [ TokenHasReadWriteScope]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

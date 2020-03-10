@@ -1,23 +1,32 @@
 import oauth2_provider.views as oauth2_views
 from django.conf import settings
+from django.conf.urls import url
+from django.contrib.auth import views as auth_views
 from fblogin import views
-from fblogin.views import ApiEndpoint, UserList, UserDetails, GroupList
+from fblogin.views import UserList, UserDetails, GroupList, home
 from django.urls import path, include
 from django.contrib import admin
-admin.autodiscover()
 
+admin.autodiscover()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('fblogin.urls')),
     path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('api/hello', ApiEndpoint.as_view()),  # an example resource endpoint
-    path('secret/', views.secret_page, name='secret'),
+    path('auth/', include('rest_framework_social_oauth2.urls')),
+    url(r'^auth/', include('social_django.urls', namespace='social')),
+    url(r'^login/$', auth_views.LoginView.as_view(template_name="registration/login.html"), name="login"),
+    url(r'^home/$', home, name='home'),
     path('users/', UserList.as_view()),
     path('users/<pk>/', UserDetails.as_view()),
     path('groups/', GroupList.as_view()),
-
 ]
+
+# path('api/hello', ApiEndpoint.as_view()),  # an example resource endpoint
+# path('secret/', views.secret_page, name='secret'),
+# url(r'^logout/$', auth_views.LogoutView.as_view(template_name="app/home.html"), name="logout"),
+# <- Here
+
 
 # OAuth2 provider endpoints
 oauth2_endpoint_views = [
@@ -40,5 +49,5 @@ if settings.DEBUG:
     oauth2_endpoint_views += [
         path('authorized-tokens/', oauth2_views.AuthorizedTokensListView.as_view(), name="authorized-token-list"),
         path('authorized-tokens/<pk>/delete/', oauth2_views.AuthorizedTokenDeleteView.as_view(),
-            name="authorized-token-delete"),
+             name="authorized-token-delete"),
     ]
