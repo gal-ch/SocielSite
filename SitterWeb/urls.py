@@ -1,53 +1,16 @@
-import oauth2_provider.views as oauth2_views
+# from django.contrib import admin
+from django.urls import path
 from django.conf import settings
-from django.conf.urls import url
-from django.contrib.auth import views as auth_views
-from fblogin import views
-from fblogin.views import UserList, UserDetails, GroupList, home
-from django.urls import path, include
-from django.contrib import admin
+from django.conf.urls import include, url
 
-admin.autodiscover()
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('fblogin.urls')),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
-    path('auth/', include('rest_framework_social_oauth2.urls')),
-    url(r'^auth/', include('social_django.urls', namespace='social')),
-    url(r'^login/$', auth_views.LoginView.as_view(template_name="registration/login.html"), name="login"),
-    url(r'^home/$', home, name='home'),
-    path('users/', UserList.as_view()),
-    path('users/<pk>/', UserDetails.as_view()),
-    path('groups/', GroupList.as_view()),
+    # path('admin/', admin.site.urls),
+    path('api/v1/', include('profiles.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+
 ]
 
-# path('api/hello', ApiEndpoint.as_view()),  # an example resource endpoint
-# path('secret/', views.secret_page, name='secret'),
-# url(r'^logout/$', auth_views.LogoutView.as_view(template_name="app/home.html"), name="logout"),
-# <- Here
 
 
-# OAuth2 provider endpoints
-oauth2_endpoint_views = [
-    path('authorize/', oauth2_views.AuthorizationView.as_view(), name="authorize"),
-    path('token/', oauth2_views.TokenView.as_view(), name="token"),
-    path('revoke-token/', oauth2_views.RevokeTokenView.as_view(), name="revoke-token"),
-]
 
-if settings.DEBUG:
-    # OAuth2 Application Management endpoints
-    oauth2_endpoint_views += [
-        path('applications/', oauth2_views.ApplicationList.as_view(), name="list"),
-        path('applications/register/', oauth2_views.ApplicationRegistration.as_view(), name="register"),
-        path('applications/<pk>/', oauth2_views.ApplicationDetail.as_view(), name="detail"),
-        path('applications/<pk>/delete/', oauth2_views.ApplicationDelete.as_view(), name="delete"),
-        path('applications/<pk>/update/', oauth2_views.ApplicationUpdate.as_view(), name="update"),
-    ]
-
-    # OAuth2 Token Management endpoints
-    oauth2_endpoint_views += [
-        path('authorized-tokens/', oauth2_views.AuthorizedTokensListView.as_view(), name="authorized-token-list"),
-        path('authorized-tokens/<pk>/delete/', oauth2_views.AuthorizedTokenDeleteView.as_view(),
-             name="authorized-token-delete"),
-    ]

@@ -1,126 +1,27 @@
-<!-- templates/base.html -->
 
-{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-
-
-    <!-- Bootstrap CSS -->
-    <title>Social Auth with Django</title>
+    <title></title>
 </head>
 <body>
-<!-- nav bar -->
-<div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
+    <h1>Django-rest-framework and OAuth example</h1>
+    <ul>
+        <li><a href="{% url 'home_session' %}">Session auth</a></li>
+        <li><a href="{% url 'home_token' %}">Token auth</a></li>
+        <li><a href="{% url 'home_jwt' %}">JWT auth</a></li>
+        <li><a href="{% url 'home_knox' %}">Knox auth</a></li>
+        <li><a href="{% url 'home_jwt_old' %}">JWT old auth (deprecated)</a></li>
+    </ul>
 
+    {% block content %}
 
-                <li class="nav-item">
-                    <a class="nav-link disabled" href="#">Account setting</a>
-                </li>
+    {% endblock content %}
 
-            </ul>
-
-        </div>
-
-
-
-    </nav>
-</div>
-<div class="container-fluid">
-
-    <div>
-        <h1 class="text-white text-center">{% block title %}{% endblock %}</h1>
-        <div class="card p-5">
-
-            {% block content %}
-
-            {% endblock %}
-
-        </div>
-    </div>
-</div>
-
-
-<!-- Footer -->
-<footer class="page-footer font-small stylish-color-dark pt-4">
-    <!-- Footer Links -->
-    <div class="container text-center text-md-left">
-        <!-- Grid row -->
-        <div class="row">
-            <!-- Grid column -->
-            <div class="col-md-4 mx-auto">
-                <!-- Content -->
-                <h5 class="font-weight-bold text-uppercase mt-3 mb-4"></h5>
-                <p>
-                    Imagine that there is very, very important content here, one that will split your life in two.
-                    Are you done? Excellent! Please share it with us, we would love to know what content is so
-                    important..</p>
-            </div>
-            <!-- Grid column -->
-            <hr class="clearfix w-100 d-md-none">
-            <!-- Grid column -->
-            <div class="col-md-2 mx-auto">
-
-                <!-- Links -->
-                <h5 class="font-weight-bold text-uppercase mt-3 mb-4"></h5>
-
-                <ul class="list-unstyled">
-                    <li>
-                        <a href="#!">surprise</a>
-                    </li>
-                    <li>
-                        <a href='#'>home</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- Grid column -->
-            <hr class="clearfix w-100 d-md-none">
-
-            <!-- Grid column -->
-            <div class="col-md-2 mx-auto">
-
-                <!-- Links -->
-                <h5 class="font-weight-bold text-uppercase mt-3 mb-4"></h5>
-
-                <ul class="list-unstyled">
-                    <li>
-                        <a href="#!">about us</a>
-                    </li>
-                    <li>
-                        <a href="#!">search</a>
-                    </li>
-                    <li>
-                </ul>
-
-            </div>
-        </div>
-        <!-- Call to action -->
-        <ul class="list-unstyled list-inline text-center py-2">
-            <li class="list-inline-item">
-                <h5 class="mb-1"></h5>
-            </li>
-
-        </ul>
-
-        <!-- Call to action -->
-        <hr>
-
-    </div>
-    <!-- Copyright -->
-</footer>
-<!-- Footer -->
-  <!-- Optional JavaScript -->
-  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-
+    {% block scripts %}
+    <script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
+    <script src="https://cdn.jsdelivr.net/satellizer/0.15.5/satellizer.min.js"></script>
+    {% endblock scripts %}
 </body>
 </html>
