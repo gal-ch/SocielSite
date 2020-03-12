@@ -5,8 +5,8 @@ from django.db import models
 class CustomUser(AbstractUser):
     mobile = models.CharField(max_length=10, blank=True, null=True)
 
-    class Meta:
-        app_label = 'users'
+    # class Meta:
+    #     app_label = 'users'
 
     def __str__(self):
         return self.email

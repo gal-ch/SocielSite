@@ -29,7 +29,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
 
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
      'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 ]
 
 SITE_ID = 1
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -135,7 +136,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'users.CustomUser'
-SITE_ID = 1
+SITE_ID = 2
 
 #DRFSO2_PROPRIETARY_BACKEND_NAME = "Facebook"
 
