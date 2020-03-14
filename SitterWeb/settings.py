@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'django.contrib.sites',
-     'users.apps.UsersConfig',
+    'users',
+    'profiles',
 
     'rest_framework',
     'rest_framework.authtoken',
@@ -45,7 +46,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'rest_auth.registration',
-
+    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount',
 
 ]
 
@@ -80,6 +82,8 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
+                # 'social.apps.django_app.context_processors.backends',
+                # 'social.apps.django_app.context_processors.login_redirect',
 
 
 
@@ -136,19 +140,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'users.CustomUser'
-SITE_ID = 2
+# SITE_ID = 1
 
 #DRFSO2_PROPRIETARY_BACKEND_NAME = "Facebook"
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-    )
-}
+
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
@@ -156,24 +152,73 @@ STATICFILES_DIRS = (
 
 
 
-# AUTH_USER_MODEL = 'usershhh.CustomUser'
 
 from .secrets import SOCIAL_AUTH_FACEBOOK_KEY, SOCIAL_AUTH_FACEBOOK_SECRET
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = False
+# ACCOUNT_AUTHENTICATION_METHOD = 'email'
+# SOCIALACCOUNT_QUERY_EMAIL=ACCOUNT_EMAIL_REQUIRED
+# SOCIALACCOUNT_EMAIL_REQUIRED=ACCOUNT_EMAIL_REQUIRED
+# SOCIALACCOUNT_STORE_TOKENS=True # not tested
+SOCIALACCOUNT_PROVIDERS = {
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SCOPE': ['email', 'public_profile', 'user_friends'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'email',
+            'name',
+            'first_name',
+            'last_name',
+            'verified',
+            'locale',
+            'timezone',
+            'link',
+            'gender',
+            'updated_time',
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+    },
 
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email', ]
-SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    'fields': ','.join([
-        # public_profile
-        'id', 'cover', 'name', 'first_name', 'last_name', 'age_range', 'link',
-        'gender', 'locale', 'picture', 'timezone', 'updated_time', 'verified',
-        # extra fields
-        'email',
-    ]),
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    # 'DEFAULT_AUTHENTICATION_CLASSES': [
+    #     'rest_framework.authentication.TokenAuthentication',
+    # ],
+    'DEFAULT_METADATA_CLASS': None,
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ]
+}
+
+CSRF_COOKIE_NAME = "csrftoken"
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = False
+
+# CORS_ALLOW_CREDENTIALS = False
+CORS_ORIGIN_WHITELIST = (
+    'localhost:3000',
+    'localhost:8000',
+    'localhost',
+)
 # AUTHENTICATION_BACKENDS = (
-#     # Django
-#     'django.contrib.auth.backends.ModelBackend',
-#
-#     'social_core.backends.facebook.FacebookOAuth2',
+#     'django.contrib.auth.backends.ModelBackend', # existing backend
+#     'allauth.account.auth_backends.AuthenticationBackend',
 # )
+
+# LOGIN_URL = 'rest_framework:login'
+# LOGOUT_URL = 'rest_framework:logout'
+
+# LOGIN_URL = '/accounts/login/'
+# LOGIN_REDIRECT_URL = '/'
