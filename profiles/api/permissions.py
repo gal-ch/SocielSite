@@ -1,4 +1,4 @@
-# from rest_framework import permissions
+# from registration import permissions
 #
 # # we want that only the user could editor is profile
 # class IsOwnerOrReadOnly(permissions.BasePermission):
