@@ -37,18 +37,21 @@ INSTALLED_APPS = [
     'users',
     'profiles',
 
+    # 'corsheaders',
     'rest_framework',
-    # 'rest_framework.authtoken',
+    'rest_framework.authtoken',
     'rest_auth',
+
     'allauth',
     'allauth.account',
     'rest_auth.registration',
-    'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+
 
 ]
 
-SITE_ID = 1
+
 
 
 MIDDLEWARE = [
@@ -137,10 +140,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'users.CustomUser'
-# SITE_ID = 1
-
-#DRFSO2_PROPRIETARY_BACKEND_NAME = "Facebook"
-
+SITE_ID = 2
 
 
 STATICFILES_DIRS = (
@@ -148,9 +148,8 @@ STATICFILES_DIRS = (
 )
 
 
-
-
-from .secrets import SOCIAL_AUTH_FACEBOOK_KEY, SOCIAL_AUTH_FACEBOOK_SECRET
+SOCIAL_AUTH_FACEBOOK_KEY = '545482803050602'
+SOCIAL_AUTH_FACEBOOK_SECRET = 'b3f183867d344084a8539aeb3959247e'
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # ACCOUNT_EMAIL_REQUIRED = True
 # ACCOUNT_USERNAME_REQUIRED = False
@@ -161,7 +160,7 @@ from .secrets import SOCIAL_AUTH_FACEBOOK_KEY, SOCIAL_AUTH_FACEBOOK_SECRET
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
         'METHOD': 'oauth2',
-        'SCOPE': ['email', 'public_profile', 'user_friends'],
+        'SCOPE': ['email', 'public_profile', 'user_friends', 'user_birthday'],
         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
         'INIT_PARAMS': {'cookie': True},
         'FIELDS': [
@@ -178,18 +177,19 @@ SOCIALACCOUNT_PROVIDERS = {
             'updated_time',
         ],
         'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': 'path.to.callable',
+        'LOCALE_FUNC': lambda request: 'kr_KR',
         'VERIFIED_EMAIL': False,
+        'VERSION': 'v2.4'
     },
 
 }
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated'
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+       'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_METADATA_CLASS': None,
@@ -200,25 +200,30 @@ REST_FRAMEWORK = {
 }
 
 
+# CSRF_COOKIE_NAME = "csrftoken"
 
-
-CSRF_COOKIE_NAME = "csrftoken"
-
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ALLOW_CREDENTIALS = False
+# CORS_ORIGIN_ALLOW_ALL = False
+# CORS_ALLOW_CREDENTIALS = False
 
 # CORS_ALLOW_CREDENTIALS = False
-CORS_ORIGIN_WHITELIST = (
-    'localhost:3000',
-    'localhost:8000',
-    'localhost',
-)
+# CORS_ORIGIN_WHITELIST = (
+#     'localhost:3000',
+#     'localhost:8000',
+#     'localhost',
+# )
+
 AUTHENTICATION_BACKENDS = (
- #  'rest_framework_social_oauth2.backends.DjangoOAuth2',
-   'django.contrib.auth.backends.ModelBackend',
+
+    # 'social_core.backends.facebook.FacebookOAuth2',  # for Facebook authentication
+    'django.contrib.auth.backends.ModelBackend',
+
 )
 
 
-REST_USE_JWT = True
+# REST_USE_JWT = True
 
 
+LOGIN_REDIRECT_URL ='/'
+
+# CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_CREDENTIALS = True

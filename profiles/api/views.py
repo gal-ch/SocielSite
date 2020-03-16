@@ -33,3 +33,16 @@ class BabysiiterProfileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+# class BabysiiterProfileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+#     permission_classes = []
+#     authentication_classes = []
+#     queryset = BabysitterProfile.objects.all()
+#     serializer_class = UserSitterSerializer
+#
+#     def put(self, request, *args, **kwargs):
+#         return self.update(request, *args, **kwargs)
+#
+#     def delete(self, request, *args, **kwargs):
+#         return self.destroy(request, *args, **kwargs)

@@ -1,3 +1,4 @@
+
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
@@ -12,7 +13,13 @@ from rest_framework import generics, mixins
 
 class FacebookLoginView(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
-    authentication_classes = [JSONWebTokenAuthentication]
+    # authentication_classes = [JSONWebTokenAuthentication]
+
+
+# class UserListView(generics.ListCreateAPIView):
+#     queryset = models.CustomUser.objects.all()
+#     serializer_class = serializers.UserSerializer
+#
 
 
 class UserListView(mixins.CreateModelMixin, generics.ListAPIView):
@@ -27,3 +34,16 @@ class UserListView(mixins.CreateModelMixin, generics.ListAPIView):
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
+
+# class UserListView(mixins.CreateModelMixin, generics.ListAPIView):
+#     lookup_field = 'pk'
+#     serializer_class = UserSerializer
+#
+#     def get_queryset(self):
+#         return CustomUser.objects.all()
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user) #only Authentication user can creat profile
+#
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)

@@ -4,7 +4,7 @@ from profiles.api.views import BabysiiterProfileAPIView, BabysiiterProfileDetail
 
 app_name = 'profiles-api'
 urlpatterns = [
-    path('users/', include('users.api.urls')),
+
     path('sitter-list-api/', BabysiiterProfileAPIView.as_view()),
     path('sitter-detail-api/<pk>', BabysiiterProfileDetailAPIView.as_view()),
 
