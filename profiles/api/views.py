@@ -36,20 +36,3 @@ class BabysiiterProfileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         return self.destroy(request, *args, **kwargs)
 
 
-# class BabysiiterProfileAPIView(mixins.CreateModelMixin, generics.ListAPIView):
-#     permission_classes = []
-#     authentication_classes = []
-#     serializer_class = UserSitterSerializer
-#
-#     def get_queryset(self):
-#         qs = CustomUser.objects.all()
-#         query = self.request.GET.get('q')
-#         if query is not None:
-#             qs = qs.filter(content__icontains=query)
-#         return qs
-#
-#     def post(self, request, *args, **kwargs):
-#         return self.create(request, *args, **kwargs)
-#
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)

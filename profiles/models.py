@@ -22,6 +22,16 @@ class BabysitterProfile(models.Model):
     def __unicode__(self):
         return u"%s" % self.user
 
+    def get_extra_data(self):
+        print(self.user.socialaccount_set.first().extra_data)
+        return self.user.socialaccount_set.first().extra_data
+
+    def get_absolute_url(self):
+        return reverse("core:sitter-detail", kwargs={'pk': self.id})
+
+    def get_update_url(self):
+        return reverse("core:sitter-detail", kwargs={'pk': self.pk})
+
 
 class RecommendationsOfSitter(models.Model):
     recommendation = models.TextField(blank=True, null=True)
@@ -47,4 +57,19 @@ class ParentProfile(models.Model):
 
     def get_extra_data(self):
         return self.user.socialaccount_set.first().extra_data
+
+    def get_absolute_url(self):
+        return reverse("core:parent-detail", kwargs={'pk': self.pk})
+
+    def get_update_url(self):
+        return reverse("core:parent-detail", kwargs={'pk': self.pk})
+
+
+class RecommendationsOfParent(models.Model):
+    recommendation = models.TextField(blank=True, null=True)
+    parent = models.ForeignKey(ParentProfile, on_delete=models.CASCADE, related_name='recommendations')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.recommendation} {self.parent.user} {self.author}"
 

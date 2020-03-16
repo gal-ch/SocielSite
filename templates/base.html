@@ -1,16 +1,24 @@
 <!-- templates/base.html -->
 
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous"/>
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
 
     <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
 
+
+    <link rel="stylesheet" href="{% static 'style.css' %}"/>
     <!-- Bootstrap CSS -->
     <title>Social Auth with Django</title>
 </head>
@@ -24,7 +32,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
-
+                <li class="nav-item active">
+                    <a class="nav-link" href="{%  url 'core:sitter-list' %}">Home <span class="sr-only">(current)</span></a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href='{{ user.babysitter.get_absolute_url }}'>Profile</a>
                 </li>
@@ -39,6 +49,11 @@
             </ul>
 
         </div>
+        {% if request.user in user.babysitter.get_absolute_url.all %}
+            <li class="list-inline-item">
+                <a href="{% url 'account_logout' %}" class="btn btn-danger btn-rounded">Add Profile</a>
+            </li>
+        {% endif %}
 
 
     </nav>
@@ -87,7 +102,7 @@
                         <a href="#!">surprise</a>
                     </li>
                     <li>
-
+                        <a href='/homepage/'>home</a>
                     </li>
                 </ul>
             </div>
@@ -113,7 +128,14 @@
             </div>
         </div>
         <!-- Call to action -->
-
+        <ul class="list-unstyled list-inline text-center py-2">
+            <li class="list-inline-item">
+                <h5 class="mb-1"></h5>
+            </li>
+            <li class="list-inline-item">
+                <a href="{% url 'account_logout' %}" class="btn btn-danger btn-rounded">logout</a>
+            </li>
+        </ul>
 
         <!-- Call to action -->
         <hr>
@@ -121,6 +143,16 @@
     </div>
     <!-- Copyright -->
 </footer>
-
+<!-- Footer -->
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  {% block script %}
+  {% endblock %}
 </body>
 </html>

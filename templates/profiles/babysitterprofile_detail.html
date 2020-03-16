@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% block content %}
+
+    {% if object.user_id == request.user.pk %}
+        <div class="sitterBtn">
+            <a href="{% url 'core:user-update' object.pk %}" class="btn btn-primary btn-lg active" role="button"
+               aria-pressed="true">Edit Profile</a>
+            <a href="#" class="btn btn-primary btn-lg active" role="button"
+               aria-pressed="true">Your Message</a>
+        </div>
+    {% endif %}
+
+
+    <div class="heading">
+        <h1 id="profileName"> {{ object.user.first_name }} {{ object.user.last_name }}</h1>
+        <img id="profileImg" width="280" height="280" style="border-radius:60px "
+             src="{{ object.user.socialaccount_set.all.0.get_avatar_url }}"/>
+    </div>
+    <div class="profile-sitter">
+        <div class="sitter-info">
+            <h2>Basic Info</h2>
+            <div class="info">
+                <h4> city: {{ object.city }}</h4>
+                <h4> age: {{ object.age }}</h4>
+                <h4> year of experience: {{ object.experienceYears }}</h4>
+                <h4> email: {{ object.user.email }}</h4>
+            </div>
+
+        </div>
+        <div class="sitter-info about">
+            <h2>About Her</h2>
+            <h4> {{ object.about }}</h4>
+        </div>
+    </div>
+
+
+
+    <div class="all-recommendations">
+        <h4 id="recommendations-title"> recommendations </h4>
+        {% for r in recommendations_list %}
+            <div class="recommend">
+                <h4 id="recommendation-text"> {{ r.recommendation }}</h4>
+                <div class="authorReco">
+                <h4 id="recommend author">{{ r.author }}</h4>
+                <img id="recommend-author-img" width="50" height="50" style="border-radius:50px "
+                     src="{{ r.author.socialaccount_set.all.0.get_avatar_url }}"/>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+
+
+    {% if object.user_id != request.user.pk %}
+        <div class="addReco">
+            <h2 id="recommendations-title">Add recommendation:</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form }}
+                <button type="submit">Submit</button>
+            </form>
+
+        </div>
+
+    {% endif %}
+{% endblock content %}

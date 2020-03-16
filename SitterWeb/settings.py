@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'users',
     'profiles',
 
-    # 'corsheaders',
+    'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'SitterWeb.urls'
@@ -147,16 +148,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-
-SOCIAL_AUTH_FACEBOOK_KEY = '545482803050602'
-SOCIAL_AUTH_FACEBOOK_SECRET = 'b3f183867d344084a8539aeb3959247e'
-# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
-# ACCOUNT_EMAIL_REQUIRED = True
-# ACCOUNT_USERNAME_REQUIRED = False
-# ACCOUNT_AUTHENTICATION_METHOD = 'email'
-# SOCIALACCOUNT_QUERY_EMAIL=ACCOUNT_EMAIL_REQUIRED
-# SOCIALACCOUNT_EMAIL_REQUIRED=ACCOUNT_EMAIL_REQUIRED
-# SOCIALACCOUNT_STORE_TOKENS=True # not tested
+from .secrets import SOCIAL_AUTH_FACEBOOK_KEY, SOCIAL_AUTH_FACEBOOK_SECRET
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
         'METHOD': 'oauth2',
@@ -200,30 +192,34 @@ REST_FRAMEWORK = {
 }
 
 
-# CSRF_COOKIE_NAME = "csrftoken"
+CORS_ORIGIN_ALLOW_ALL = True
 
-# CORS_ORIGIN_ALLOW_ALL = False
-# CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOW_CREDENTIALS = True
 
-# CORS_ALLOW_CREDENTIALS = False
-# CORS_ORIGIN_WHITELIST = (
-#     'localhost:3000',
-#     'localhost:8000',
-#     'localhost',
-# )
+CORS_ALLOW_METHODS = (
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+)
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken'
+)
 
 AUTHENTICATION_BACKENDS = (
-
     # 'social_core.backends.facebook.FacebookOAuth2',  # for Facebook authentication
     'django.contrib.auth.backends.ModelBackend',
 
 )
 
-
-# REST_USE_JWT = True
-
-
 LOGIN_REDIRECT_URL ='/'
 
-# CORS_ORIGIN_ALLOW_ALL = True
-# CORS_ALLOW_CREDENTIALS = True
+

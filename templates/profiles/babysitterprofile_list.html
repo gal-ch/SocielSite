@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+{% providers_media_js %}
+{% block title %} Home {% endblock %}
+
+{% block content %}
+
+    <div>
+
+        <select class="selectpicker" multiple title="age">
+            <option>18-25</option>
+            <option>25-35</option>
+            <option>35-50</option>
+            <option>50+</option>
+        </select>
+        <select class="selectpicker" multiple title="city">
+            <option>Mustard</option>
+            <option>Ketchup</option>
+            <option>Relish</option>
+        </select>
+
+        <select class="selectpicker" multiple title="experience">
+            <option>0-5</option>
+            <option>5-10</option>
+            <option>10+</option>
+        </select>
+
+
+        <button class="btn btn-danger navbar-btn">search</button>
+    </div>
+
+    <div class="list-sitters">
+        {% if object.user_id not in request.user.pk %}
+
+
+        {% endif %}
+
+
+        {% for account in object_list %}
+            <div class="sitter">
+                <img width="150" height="150" style="border-radius:50px "
+                     src="{{ account.user.socialaccount_set.all.0.get_avatar_url }}"/>
+                <a href='{{ account.get_absolute_url }}'><h4> {{ account.user.first_name }}</h4></a>
+                <h4> city: {{ account.city }}</h4>
+                <h4> experience: {{ account.experienceYears }}</h4>
+                <h4> age: {{ account.age }}</h4>
+                <h4> about: {{ account.about }}</h4>
+            </div>
+
+        {% endfor %}
+    </div>
+
+    <!-- End here -->
+{% endblock %}
