@@ -7,5 +7,6 @@ urlpatterns = [
 
     path('sitter-list-api/', BabysiiterProfileAPIView.as_view()),
     path('sitter-detail-api/<pk>', BabysiiterProfileDetailAPIView.as_view()),
+    # path('sitter-detail-api/<pk>', BabysiiterProfileDetailAPIView.as_view()),
 
 ]

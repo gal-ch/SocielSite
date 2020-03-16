@@ -1,6 +1,7 @@
 from rest_framework import generics, mixins
-from profiles.api.serializers import BabysitterProfileSerializer
+from profiles.api.serializers import BabysitterProfileSerializer, UserSitterSerializer
 from profiles.models import BabysitterProfile
+from users.models import CustomUser
 
 
 class BabysiiterProfileAPIView(mixins.CreateModelMixin, generics.ListAPIView):
@@ -35,14 +36,20 @@ class BabysiiterProfileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
         return self.destroy(request, *args, **kwargs)
 
 
-# class BabysiiterProfileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+# class BabysiiterProfileAPIView(mixins.CreateModelMixin, generics.ListAPIView):
 #     permission_classes = []
 #     authentication_classes = []
-#     queryset = BabysitterProfile.objects.all()
 #     serializer_class = UserSitterSerializer
 #
-#     def put(self, request, *args, **kwargs):
-#         return self.update(request, *args, **kwargs)
+#     def get_queryset(self):
+#         qs = CustomUser.objects.all()
+#         query = self.request.GET.get('q')
+#         if query is not None:
+#             qs = qs.filter(content__icontains=query)
+#         return qs
 #
-#     def delete(self, request, *args, **kwargs):
-#         return self.destroy(request, *args, **kwargs)
+#     def post(self, request, *args, **kwargs):
+#         return self.create(request, *args, **kwargs)
+#
+#     def perform_create(self, serializer):
+#         serializer.save(user=self.request.user)

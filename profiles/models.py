@@ -22,3 +22,29 @@ class BabysitterProfile(models.Model):
     def __unicode__(self):
         return u"%s" % self.user
 
+
+class RecommendationsOfSitter(models.Model):
+    recommendation = models.TextField(blank=True, null=True)
+    sitter = models.ForeignKey(BabysitterProfile, on_delete=models.CASCADE,related_name='recommendations')
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.recommendation} {self.sitter.user} {self.author}"
+
+
+class ParentProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name='parent')
+    # name = models.ForeignKey(User.default=None)
+    city = models.CharField(max_length=200)
+    kidsAge = models.IntegerField(default=0)
+    about = models.TextField(default=None)
+
+    def __str__(self):
+        return f"{self.pk} {self.user} {self.city} {self.kidsAge} {self.about} "
+
+    def __unicode__(self):
+        return u"%s" % self.user
+
+    def get_extra_data(self):
+        return self.user.socialaccount_set.first().extra_data
+
