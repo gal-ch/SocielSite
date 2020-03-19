@@ -3,7 +3,7 @@ from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
-from users.models import CustomUser
+from accounts.models import CustomUser
 
 
 @receiver(post_save, sender=CustomUser)

@@ -1,10 +1,18 @@
 from allauth.socialaccount.templatetags.socialaccount import provider_login_url, ProviderLoginURLNode
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, render, redirect
+from django.utils.decorators import method_decorator
 from django.views.generic import FormView, ListView, DetailView, CreateView, UpdateView
 from .forms import BabysitterProfileForm, RecommendationsParentForm, \
     RecommendationsSitterForm, CreateSitterProfileForm, CreateParentProfileForm, ParentProfileForm
 from .models import *
+
+
+class LoginRequireMixin(object):
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LoginRequireMixin, self).dispatch(request, *args, **kwargs)
 
 
 class BabysitterProfileListView(LoginRequiredMixin, ListView):
@@ -14,7 +22,7 @@ class BabysitterProfileListView(LoginRequiredMixin, ListView):
     queryset = BabysitterProfile.objects.prefetch_related('user__socialaccount_set')
 
 
-class BabysitterProfileDetailView(DetailView):
+class BabysitterProfileDetailView(LoginRequiredMixin, DetailView):
     model = BabysitterProfile
 
     def get_context_data(self, **kwargs):

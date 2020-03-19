@@ -66,7 +66,7 @@ class RecommendationsParentForm(forms.ModelForm):
 #
 # class MyAuthenticationForm(forms.Form):
 #     """
-#     Base class for authenticating users. Extend this to get a form that accepts
+#     Base class for authenticating accounts. Extend this to get a form that accepts
 #     username/password logins.
 #     """
 #     username = forms.CharField(widget=forms.TextInput(attrs={'autofocus': True}))

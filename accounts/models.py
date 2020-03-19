@@ -24,7 +24,7 @@ class CustomUser(AbstractUser):
     )
 
     class Meta:
-        app_label = 'users'
+        app_label = 'accounts'
 
     def token(self):
         return self.token()

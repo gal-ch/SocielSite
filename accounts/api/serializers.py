@@ -2,7 +2,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.contrib.sites import requests
 from rest_framework import serializers
 from profiles.models import BabysitterProfile
-from users.models import CustomUser, FacebookFriend
+from accounts.models import CustomUser, FacebookFriend
 import rest_auth.serializers
 from rest_framework import serializers
 

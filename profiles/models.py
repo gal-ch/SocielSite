@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.timesince import timesince
 
-from users.models import CustomUser
+from accounts.models import CustomUser
 
 ageChoices = [(x, int(x)) for x in range(18, 70)]
 expChoices = [(x, int(x)) for x in range(0, 30)]
@@ -43,7 +43,7 @@ class RecommendationsOfSitter(models.Model):
     @property
     def age(self):
         now = datetime.now()
-        publish_time = datetime.combine(self.publish_date, datetime.now().min.time())
+        publish_time = datetime.combine(self.publish_data, datetime.now().min.time())
         try:
             difference = now - publish_time
         except:

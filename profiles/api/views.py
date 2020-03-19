@@ -1,7 +1,7 @@
 from rest_framework import generics, mixins
 from profiles.api.serializers import BabysitterProfileSerializer, UserSitterSerializer
 from profiles.models import BabysitterProfile
-from users.models import CustomUser
+from accounts.models import CustomUser
 
 
 class BabysiiterProfileAPIView(mixins.CreateModelMixin, generics.ListAPIView):

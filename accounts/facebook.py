@@ -2,11 +2,19 @@ from __future__ import unicode_literals, absolute_import
 import re
 
 import facebook
+from django.contrib.gis import db
+
 from facebook import GraphAPI
+import facebook
+
+import requests
+
+
 
 
 class Facebook():
     graph = None
+
 
     def __init__(self, token):
         self.graph = facebook.GraphAPI(access_token=token, version='2.12')
@@ -29,3 +37,4 @@ class Facebook():
     def get_friends(self):
         event = self.graph.get_all_connections(id='me', connection_name='friends')
         return [x['id'] for x in event]
+

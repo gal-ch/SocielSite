@@ -3,7 +3,7 @@
 # from . import views
 # from .views import UserListView
 #
-# app_name = 'users'
+# app_name = 'accounts'
 # urlpatterns = [
 #     path('lists/', views.UserListView.as_view(), name='user-list'),
 #     # path('', UserListView.as_view()),

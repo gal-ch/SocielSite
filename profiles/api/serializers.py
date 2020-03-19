@@ -1,7 +1,7 @@
 from asyncio import exceptions
 from rest_framework import serializers
 from profiles.models import BabysitterProfile, ParentProfile
-from users.models import CustomUser
+from accounts.models import CustomUser
 
 
 class BabysitterProfileSerializer(serializers.ModelSerializer):

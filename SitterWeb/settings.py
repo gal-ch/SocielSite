@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'django.contrib.sites',
-    'users',
+    'accounts',
     'profiles',
 
     'corsheaders',
@@ -140,8 +140,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
-AUTH_USER_MODEL = 'users.CustomUser'
-SITE_ID = 2
+AUTH_USER_MODEL = 'accounts.CustomUser'
+SITE_ID = 3
 
 
 STATICFILES_DIRS = (
@@ -181,8 +181,8 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-       'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
+       'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_METADATA_CLASS': None,
     'DEFAULT_RENDERER_CLASSES': [
@@ -217,9 +217,10 @@ CORS_ALLOW_HEADERS = (
 AUTHENTICATION_BACKENDS = (
     # 'social_core.backends.facebook.FacebookOAuth2',  # for Facebook authentication
     'django.contrib.auth.backends.ModelBackend',
+    "allauth.account.auth_backends.AuthenticationBackend",
 
 )
 
 LOGIN_REDIRECT_URL ='/'
 
-
+REST_USE_JWT = True
