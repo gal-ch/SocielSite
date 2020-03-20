@@ -14,7 +14,4 @@ urlpatterns = [
     path('parent/', ParentProfileListView.as_view(), name='parent-list'),
     path('parent/<int:pk>/', ParentProfileDetailView.as_view(), name='parent-detail'),
     path('api/', include('profiles.api.urls')),
-
-
-
 ]

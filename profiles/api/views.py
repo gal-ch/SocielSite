@@ -1,5 +1,5 @@
 from rest_framework import generics, mixins
-from profiles.api.serializers import BabysitterProfileSerializer, UserSitterSerializer
+from profiles.api.serializers import BabysitterProfileSerializer
 from profiles.models import BabysitterProfile
 from accounts.models import CustomUser
 

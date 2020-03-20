@@ -1,21 +1,19 @@
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_200_OK
-from rest_framework.views import APIView
-from rest_auth.registration.views import SocialLoginView
-from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from accounts.api.serializers import UserSerializer, ListFacebookFriendSerializer, FacebookRegisterSerializer
-from accounts.facebook import Facebook
-from accounts.models import CustomUser, FacebookFriend
+import requests
+from django.http import HttpResponse
 from rest_framework import generics, mixins, status
-from django.shortcuts import get_object_or_404
-from allauth.socialaccount.helpers import complete_social_login
+OAUTH2_REDIRECT_URI = 'http://localhost:8000/callback'
+from SitterWeb import secrets
+from .serializers import *
+from allauth.account.adapter import get_adapter
+from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from rest_auth.registration.views import SocialLoginView
+from accounts import facebook
 
 
 class FacebookLoginView(SocialLoginView):
     adapter_class = FacebookOAuth2Adapter
+    serializer_class = SocialLoginSerializer
 
 
 class UserListView(mixins.CreateModelMixin, generics.ListAPIView):
@@ -26,64 +24,40 @@ class UserListView(mixins.CreateModelMixin, generics.ListAPIView):
         return CustomUser.objects.all()
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user) #only Authentication user can creat profile
+        serializer.save(user=self.request.user)
 
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
 
-class FacebookFriendListApiView(generics.ListAPIView):
-    serializer_class = ListFacebookFriendSerializer
-
-    def get_queryset(self):
-        return FacebookFriend.objects.filter(user = self.request.user)
-
-
-# class AuthFacebookView(APIView):
-#     permission_classes = (AllowAny,)
+# class FacebookLogin(SocialLoginView):
+#     """
+#     Facebook login for system user accounts
+#     """
+#     adapter_class = FacebookOAuth2Adapter
+#     client_class = OAuth2Client
+#     callback_url = OAUTH2_REDIRECT_URI + "?chan=facebook"
+#     serializer_class = SocialLoginSerializer
 #
-#     def post(self, request, format=None):
-#         if "token" in request.data:
-#             fb = Facebook(request.data['token'])
-#             user = get_object_or_404(CustomUser, idsn=fb.get_id())
+#     def process_login(self):
+#         get_adapter(self.request).login(self.request, self.user)
 #
-#             if user.type == "facebook":
-#                 token = user.token()
-#                 user = UserSerializer(instance=user).data
-#                 return Response({"token": token, "user": user}, status=status.HTTP_200_OK)
-#         return Response(status=status.HTTP_400_BAD_REQUEST)
+#
 
+#
+#
+def fb_exchange_token(request):
+    """
+    DEPRECATED Exchange a short lived facebook token for a long lived one
+    """
+    fb = facebook.Facebook()
+    print(fb.client_secret)
+    r = requests.get(fb.token_url + '?grant_type=fb_exchange_token' +
+            '&client_id=' + secrets.SOCIAL_AUTH_FACEBOOK_KEY +
+            '&client_secret=' + secrets.SOCIAL_AUTH_FACEBOOK_SECRET +
+            '&fb_exchange_token=' + request.GET['access_token'])
+    return HttpResponse(r.text)
 
-class FacebookRegisterApiView(APIView):
-    permission_classes = (AllowAny,)
-
-    def post(self, request, format=None):
-
-        if "token" in request.data and "username" in request.data:
-            facebook = Facebook(request.data['token'])
-
-            # User.objects.filter(idsn=facebook.get_id()).delete()
-
-            serializer = FacebookRegisterSerializer(data=facebook.get_profile(request.data['username']))
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-
-            user = UserSerializer(instance=serializer.instance)
-            token = serializer.instance.token()
-
-            friends_id = facebook.get_friends()
-
-            if friends_id:
-                friends = CustomUser.objects.filter(idsn__in=friends_id)
-                FacebookFriend.objects.bulk_create(
-                    [FacebookFriend(user_id=serializer.instance.id, friend=x) for x in friends.all()]
-                    +
-                    [FacebookFriend(user=x, friend_id=serializer.instance.id) for x in friends.all()]
-                )
-
-            return Response({"token": token, "user": user.data}, status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 

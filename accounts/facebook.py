@@ -1,40 +1,170 @@
 from __future__ import unicode_literals, absolute_import
 import re
-
 import facebook
-from django.contrib.gis import db
-
-from facebook import GraphAPI
-import facebook
-
-import requests
-
-
+import os
+import json
+from django.conf import settings
+from requests_oauthlib import OAuth2Session
+from requests_oauthlib.compliance_fixes import facebook_compliance_fix
+OAUTH2_REDIRECT_URI = 'http://localhost:8000/callback'
 
 
 class Facebook():
-    graph = None
 
+    def __init__(self, account_id = None):
 
-    def __init__(self, token):
-        self.graph = facebook.GraphAPI(access_token=token, version='2.12')
+        self.account_id = account_id
+        self.graph_url = 'https://graph.facebook.com/'
+        self.token_url = self.graph_url + 'oauth/access_token'
+        self.client_id = settings.SOCIAL_AUTH_FACEBOOK_KEY
+        self.client_secret = settings.SOCIAL_AUTH_FACEBOOK_SECRET
+        self.redirect_uri = OAUTH2_REDIRECT_URI + "?chan=facebook"
+        self.tagname = 'facebook'
+        self.oauth = None
+        self.url = 'https://www.facebook.com/'
 
-    def get_id(self):
-        event = self.graph.get_object(id='me')
-        return event['id']
+    def fav(self, social_account):
+        """Like an existing post"""
+        pass
 
-    def get_profile(self, username):
-        event = self.graph.get_object(id='me', fields='id,first_name,last_name,email,picture.type(large)')
-        obj = {
-            "username": re.sub(r'\s+', '', username),
-            "email": event['email'] if 'email' in event else event['id'],
-            "first_name": event['first_name'],
-            "last_name": event['last_name'],
-            "idsn": event['id'],
-        }
-        return obj
+    def get_user_image(self):
+        """
+        Get user profile image
+        """
+        self.image = json.loads(self.oauth.get(self.graph_url
+            + self.account_id+"/picture?width=160&height=160&redirect=0").content)
+        return
 
-    def get_friends(self):
-        event = self.graph.get_all_connections(id='me', connection_name='friends')
-        return [x['id'] for x in event]
+    def get_user_detail(self):
+        """
+        Get user details
+        """
+        user = json.loads(
+                self.oauth.get(self.graph_url + "me?fields=id,name,email").content)
 
+        # Fetch user profile image
+        self.account_id = user["id"]
+        self.get_user_image()
+
+        return { "id": user["id"],
+                "name": user["name"],
+                "email": user["email"] if "email" in user else "sin@email.com",
+                "image": self.image["data"]["url"]
+                        if "data" in self.image and "url" in self.image["data"] else None}
+
+    def get_page_image(self, page_id, token):
+        """
+        Get page profile image
+        """
+        self.image = json.loads(self.oauth.get(self.graph_url
+                + page_id+"/picture?access_token="+ token
+                +"&width=160&height=160&redirect=0").content)
+        return
+
+    def get_user_pages(self, token, account_id):
+        """
+        Get user pages
+        """
+        response = json.loads(self.oauth.get(self.graph_url + "me/accounts?access_token=" + token ).content)
+        pages_list = []
+        for page in response["data"]:
+            pages = {}
+            if "CREATE_CONTENT" in page["perms"]:
+                pages["page_id"] = page["id"]
+                pages["name"] = page["name"]
+                pages["token"] = page["access_token"]
+                pages_list.append(pages)
+
+        return pages_list
+
+    def get_oauthsession(self):
+        """
+        Returns a Facebook requests_oauthlib OAuth2Session
+        """
+
+        return self.get_oauth2session()
+
+    def get_oauth2session(self):
+        """
+        Returns a Facebook requests_oauthlib OAuth2Session
+        """
+        self.oauth = OAuth2Session(client_id = self.client_id,
+                redirect_uri = self.redirect_uri)
+        self.oauth = facebook_compliance_fix(self.oauth)
+
+        return self.oauth
+
+    def get_token(self, redirect_response):
+        """
+        Get a facebook OAuth2 token
+        """
+        token = self.oauth.fetch_token(
+                 token_url = self.token_url,
+                client_secret = self.client_secret,
+                 authorization_response = redirect_response
+                )
+
+        return token
+
+    def post(self, token, post, account_id, staff = False):
+        """
+        New facebook post
+        """
+        copy = post.content["txt"]
+        if staff==1:
+            node = self.graph_url + account_id + "/"
+        else:
+            node = self.graph_url + "me/"
+
+        payload = { "message": copy}
+
+        parameter_token = ""
+        if staff:
+            parameter_token= "access_token=" + token
+
+        if ("link" in post.content
+            and (post.content["link"] is not None
+                and post.content["link"] != "")):
+
+            imagen = post.content["link"]
+
+            if(post.content["linkType"] == "img"):
+                node = node + "photos?" + parameter_token
+                payload["url"] = imagen
+            else:
+
+                node = node + "feed?" + parameter_token + "&link=" + imagen + "&caption=" + settings.FACEBOOK_URL_CAPTION
+
+        else:
+            node = node + "feed?" + parameter_token
+
+        if  staff:
+            self.oauth.access_token = token
+            #pass
+        else:
+            self.oauth.token = token
+
+        response = self.oauth.post(node, data = payload)
+
+        return response
+
+    def share(self, token, permalink, account_id, post_id):
+        """
+        New facebook post
+        """
+
+        parameter_token= "access_token=" + token["access_token"]
+        self.oauth.access_token = token
+
+        node = self.graph_url + account_id + "/"
+
+        node = node + "feed?" + parameter_token
+
+        payload = {"link": permalink}
+
+        response = self.oauth.post(node, data = payload)
+
+        return response
+
+    def set_account_id(self, account_id):
+        self.account_id = account_id

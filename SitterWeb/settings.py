@@ -8,7 +8,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
+import datetime
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,34 +38,34 @@ INSTALLED_APPS = [
     'profiles',
 
     'corsheaders',
+    # django-rest-framework
     'rest_framework',
+    'rest_framework_swagger',
     'rest_framework.authtoken',
     'rest_auth',
-
     'allauth',
     'allauth.account',
     'rest_auth.registration',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.facebook',
-
-
 ]
-
-
 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'SitterWeb.urls'
+
+
+
 
 TEMPLATES = [
     {
@@ -141,18 +141,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'accounts.CustomUser'
-SITE_ID = 3
+SITE_ID = 4
 
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+SOCIALACCOUNT_ADAPTER = 'accounts.views.SocialAccountAdapter'
 from .secrets import SOCIAL_AUTH_FACEBOOK_KEY, SOCIAL_AUTH_FACEBOOK_SECRET
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
         'METHOD': 'oauth2',
-        'SCOPE': ['email', 'public_profile', 'user_friends', 'user_birthday'],
+        'SCOPE': ['email', 'public_profile', 'user_friends', 'user_birthday', 'user_link'],
         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
         'INIT_PARAMS': {'cookie': True},
         'FIELDS': [
@@ -177,18 +178,14 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-       'rest_framework.authentication.BasicAuthentication',
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ],
-    'DEFAULT_METADATA_CLASS': None,
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
-    ]
+        'rest_framework.authentication.BasicAuthentication',
+    ),
 }
 
 
@@ -224,3 +221,21 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_REDIRECT_URL ='/'
 
 REST_USE_JWT = True
+
+JWT_AUTH = {
+         'JWT_RESPONSE_PAYLOAD_HANDLER':
+         'accounts.utils.jwt_response_payload_handler',
+         'JWT_ALLOW_REFRESH': True,
+         'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=600),
+         }
+
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+        'type': 'basic'
+        }
+    },
+    'DOC_EXPANSION': 'None',
+    'JSON_EDITOR': True
+}

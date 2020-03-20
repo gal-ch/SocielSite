@@ -28,6 +28,8 @@
                 <h4> city: {{ object.city }}</h4>
                 <h4> age: {{ object.kidsAge }}</h4>
                 <h4> email: {{ object.user.email }}</h4>
+                 <a href='{{object.user.link}}'><h4> {{ account.user.first_name }}</h4></a>
+
             </div>
         </div>
         <div class="sitter-info about">
@@ -45,6 +47,7 @@
                 <h2 id="recommend author">{{ r.author }}</h2>
                 <img id="recommend-author-img" width="50" height="50" style="border-radius:50px "
                      src="{{ r.author.socialaccount_set.all.0.get_avatar_url }}"/>
+
             </div>
         {% endfor %}
 

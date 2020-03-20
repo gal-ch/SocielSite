@@ -1,41 +1,48 @@
 from django.contrib.auth.models import AbstractUser
-from django.db import models
 from django.contrib.auth.models import User
-
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager as DefaultUserManager
+from django.core.files.base import ContentFile
+from django.core.files.temp import NamedTemporaryFile
+from requests import request, HTTPError
 from django.db import models
+
+
+class UserManager(DefaultUserManager):
+
+    def get_or_create_facebook_user(self, user_pk, extra_data, profile_url):
+        print(extra_data)
+        user = User.objects.get(pk=user_pk)
+        user.user_type = user.USER_TYPE_FACEBOOK
+        user.profile_image = profile_url
+        #user.user_birthday = models.DateField(blank=True, null=True)
+
+        try:
+            response = request('GET', profile_url, params={'type': 'large'})
+            response.raise_for_status()
+        except HTTPError:
+            pass
+
+        user.save()
+
+        return user
 
 
 class CustomUser(AbstractUser):
-    TYPE = (
-        ('SITTER', ('sitter')),
-        ('PERANT', ('parent'))
-    )
-    user_birthday = models.DateField(blank=True, null=True)
-    email = models.EmailField(default='', max_length=50, unique=True)
-    # photo = ImageField(_('photo'), blank=True, default=DEFAULT_PHOTO)
-    fcm = models.CharField(max_length=250, null=True, blank=True) #FCM token for push notification
-    idsn = models.CharField(max_length=128, null=True, db_index=True, blank=True) #ID facebook
-    title = models.CharField(max_length=250, null=True, blank=True)
-    type = models.CharField(
-        max_length=32,
-        choices=TYPE,
-        default='SITTER',
+    USER_TYPE_DJANGO = 'D'
+    USER_TYPE_FACEBOOK = 'F'
+    USER_TYPE_CHOICES = (
+        (USER_TYPE_DJANGO, 'Django'),
+        (USER_TYPE_FACEBOOK, 'Facebook'),
     )
 
-    class Meta:
-        app_label = 'accounts'
+    user_type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES, default='F')
+    email = models.EmailField(blank=True, null=True)
+    # age =
 
-    def token(self):
-        return self.token()
-
-
-class FacebookFriend(models.Model):
-    user = models.ForeignKey(CustomUser, related_name="facebook_friends", on_delete=models.CASCADE)
-    friend = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    # follow = models.BooleanField(default=False)
+    objects = UserManager()
 
     def __str__(self):
-        return '{} - {}'.format(self.user, self.friend)
+        return self.username
 
 
