@@ -23,6 +23,9 @@ class BabysitterProfile(models.Model):
     def __str__(self):
         return f"{self.pk} {self.user} {self.city} {self.age} {self.about} {self.experienceYears}"
 
+    def get_email_user(self, user):
+        return self.user.email
+
     def get_extra_data(self):
         return self.user.socialaccount_set.first().extra_data
 

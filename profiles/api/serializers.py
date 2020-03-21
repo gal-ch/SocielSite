@@ -1,10 +1,14 @@
 from asyncio import exceptions
 from rest_framework import serializers
+
+from accounts.api.serializers import UserSerializer
 from profiles.models import BabysitterProfile, ParentProfile
 from accounts.models import CustomUser
 
 
 class BabysitterProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    email = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = BabysitterProfile
         fields =[
@@ -13,7 +17,12 @@ class BabysitterProfileSerializer(serializers.ModelSerializer):
             'age',
             'experienceYears',
             'about',
+            'email',
+
         ]
+    def get_email(self, obj):
+        user = self.context.get("user")
+        return obj.get_email_user(user)
 
 
 class ParentProfileSerializer(serializers.ModelSerializer):

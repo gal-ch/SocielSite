@@ -1,12 +1,12 @@
 from rest_framework import generics, mixins
+
+from accounts.api.serializers import UserSerializer
 from profiles.api.serializers import BabysitterProfileSerializer
 from profiles.models import BabysitterProfile
 from accounts.models import CustomUser
 
 
 class BabysiiterProfileAPIView(mixins.CreateModelMixin, generics.ListAPIView):
-    permission_classes = []
-    authentication_classes = []
     serializer_class = BabysitterProfileSerializer
 
     def get_queryset(self):
@@ -16,6 +16,9 @@ class BabysiiterProfileAPIView(mixins.CreateModelMixin, generics.ListAPIView):
             qs = qs.filter(content__icontains=query)
         return qs
 
+    def get_serializer_context(self, *args, **kwargs):
+        return {"request": self.request}
+
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
@@ -23,9 +26,8 @@ class BabysiiterProfileAPIView(mixins.CreateModelMixin, generics.ListAPIView):
         serializer.save(user=self.request.user)
 
 
+
 class BabysiiterProfileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = []
-    authentication_classes = []
     queryset = BabysitterProfile.objects.all()
     serializer_class = BabysitterProfileSerializer
 

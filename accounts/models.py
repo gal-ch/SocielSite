@@ -15,7 +15,7 @@ class UserManager(DefaultUserManager):
         user = User.objects.get(pk=user_pk)
         user.user_type = user.USER_TYPE_FACEBOOK
         user.profile_image = profile_url
-        #user.user_birthday = models.DateField(blank=True, null=True)
+        user.user_birthday = models.DateField(blank=True, null=True)
 
         try:
             response = request('GET', profile_url, params={'type': 'large'})
@@ -38,11 +38,13 @@ class CustomUser(AbstractUser):
 
     user_type = models.CharField(max_length=1, choices=USER_TYPE_CHOICES, default='F')
     email = models.EmailField(blank=True, null=True)
-    # age =
+    birthday = models.DateField(blank=True, null=True)
 
     objects = UserManager()
 
     def __str__(self):
         return self.username
+
+
 
 
