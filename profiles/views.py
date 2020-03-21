@@ -84,9 +84,9 @@ class BabysitterProfileUpdate(UpdateView):
     def form_valid(self, form):
         data = form.cleaned_data
         email = data['email']
-        user = self.request.user
-        user.email = email
-        user.save()
+        # user = self.request.user
+        self.email = email
+        # user.save()
         return super().form_valid(form)
 
 

@@ -16,7 +16,9 @@ urlpatterns = [
     path('accounts/registration/', include('rest_auth.registration.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('user_list/', views.UserListView.as_view(), name='user-list'),
+    path('user_detail/<pk>', UserDetailAPIView.as_view(), name='detail'),
     path('auth/facebook/', FacebookLoginView.as_view(), name="fb_login"),
+
 
     # path('relation/facebook-list/', FacebookFriendListApiView.as_view(), name='relation-facebook'),
     # # path('auth/facebook/', AuthFacebookView.as_view()),

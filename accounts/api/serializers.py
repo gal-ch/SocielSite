@@ -5,9 +5,21 @@ from accounts.models import CustomUser
 
 
 class UserSerializer(serializers.ModelSerializer):
+    uri = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = CustomUser
-        fields = ('email', 'username', 'first_name', 'last_name', 'user_type')
+        fields = (
+                  'email',
+                  'username',
+                  'first_name',
+                  'last_name',
+                  'user_type',
+                  'uri',
+                  )
+
+    def get_uri(self, obj):
+        return "users/user_detail/{pk}".format(pk=obj.pk)
 
 # class FacebookRegisterSerializer(serializers.ModelSerializer):
 #     email = serializers.CharField()

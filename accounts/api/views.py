@@ -1,4 +1,5 @@
 import requests
+from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from rest_framework import generics, mixins, status
 OAUTH2_REDIRECT_URI = 'http://localhost:8000/callback'
@@ -9,6 +10,7 @@ from allauth.socialaccount.providers.facebook.views import FacebookOAuth2Adapter
 from allauth.socialaccount.providers.oauth2.client import OAuth2Client
 from rest_auth.registration.views import SocialLoginView
 from accounts import facebook
+User = get_user_model()
 
 
 class FacebookLoginView(SocialLoginView):
@@ -29,6 +31,17 @@ class UserListView(mixins.CreateModelMixin, generics.ListAPIView):
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
+
+class UserDetailAPIView(generics.RetrieveAPIView):
+    lookup_field = 'pk'
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
 
 # class FacebookLogin(SocialLoginView):
 #     """

@@ -26,7 +26,6 @@ class BabysiiterProfileAPIView(mixins.CreateModelMixin, generics.ListAPIView):
         serializer.save(user=self.request.user)
 
 
-
 class BabysiiterProfileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = BabysitterProfile.objects.all()
     serializer_class = BabysitterProfileSerializer

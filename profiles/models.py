@@ -1,3 +1,4 @@
+import json
 from datetime import timezone, datetime, timedelta
 
 from django.contrib.auth import get_user_model
@@ -19,12 +20,10 @@ class BabysitterProfile(models.Model):
     age = models.IntegerField(choices=ageChoices, default=18)
     about = models.TextField(default=None)
     experienceYears = models.IntegerField(choices=expChoices, default=0, blank=True)
+    email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.pk} {self.user} {self.city} {self.age} {self.about} {self.experienceYears}"
-
-    def get_email_user(self, user):
-        return self.user.email
 
     def get_extra_data(self):
         return self.user.socialaccount_set.first().extra_data
@@ -39,11 +38,37 @@ class BabysitterProfile(models.Model):
 class RecommendationsOfSitter(models.Model):
     recommendation = models.TextField(blank=True, null=True)
     sitter = models.ForeignKey(BabysitterProfile, on_delete=models.CASCADE,related_name='recommendations')
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     publish_data = models.DateField(auto_now=False, auto_now_add=False, default=timezone.now)
 
     def __str__(self):
         return f"{self.recommendation} {self.sitter.user} {self.author}"
+
+    def get_author_user(self, user):
+        return self.author.username
+
+    # def serialize(self):
+    #     # try:
+    #     #     image = self.image.url
+    #     # except:
+    #     #     image = ""
+    #     data = {
+    #         "sitter_pk": self.sitter.user.primary_key,
+    #         'sitter_name': self.sitter.user.username,
+    #         "author_pk": self.author.primary_key,
+    #         'author_name': self.author.user.username,
+    #         "recommendation": self.recommendation,
+    #         'publish_data': self.publish_data
+    #         # "image": image
+    #     }
+    #     data = json.dumps(data)
+    #     return data
+
+
+
+
+
+
 
     @property
     def age(self):
