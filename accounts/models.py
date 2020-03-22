@@ -55,33 +55,3 @@ class CustomUser(AbstractUser):
     def get_user_token(self, user_pk):
         return Token.objects.get_or_create(user_id=user_pk)
 
-
-# @receiver(post_save, sender=User)
-# def create_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         CustomUser.objects.create(user=instance)
-
-
-
-#@receiver(post_save, sender=User)
-# def update_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         CustomUser.objects.create(user=instance)
-#         instance.profile.save()
-#
-# @receiver(user_signed_up)
-# def user_signed_up_(request, user, sociallogin=None, **kwargs):
-#     if sociallogin:
-#         b=user.id
-#         user.profile.follow.add(b)
-#         try:
-#             if sociallogin.account.extra_data['birthday']:
-#                 a=sociallogin.account.extra_data['birthday']
-#                 b=time.strptime(a,"%m/%d/%Y")
-#                 c=time.strftime("%Y-%m-%d",b)
-#                 user.refresh_from_db()
-#                 user.profile.dob=c
-#                 user.profile.save()
-#         except:
-#             pass
-#

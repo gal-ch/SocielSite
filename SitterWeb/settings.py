@@ -39,9 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'accounts',
     'profiles',
+    'comments',
 
     'corsheaders',
-    # django-rest-framework
     'rest_framework',
     'rest_framework_swagger',
     'rest_framework.authtoken',
@@ -187,9 +187,6 @@ SOCIALACCOUNT_PROVIDERS = {
     },
 
 }
-
-
-
 
 CORS_ORIGIN_ALLOW_ALL = True
 

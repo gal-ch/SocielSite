@@ -6,6 +6,7 @@ User = get_user_model()
 from rest_framework import serializers
 from rest_framework.reverse import reverse as api_reverse
 
+
 class UserSerializer(serializers.ModelSerializer):
     uri = serializers.SerializerMethodField(read_only=True)
 
