@@ -6,10 +6,9 @@ from django.conf.urls import include, url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url('accounts/', include('allauth.urls')),
+    path('accounts/', include('allauth.urls')),
     path('', include('profiles.urls')),
-    path('users/', include('accounts.api.urls')),
-
+    path('accounts-api/', include('accounts.api.urls')),
 ]
 
 

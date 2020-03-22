@@ -13,5 +13,5 @@ urlpatterns = [
     path('user/<int:pk>/', BabysitterProfileUpdate.as_view(), name='user-update'),
     path('parent/', ParentProfileListView.as_view(), name='parent-list'),
     path('parent/<int:pk>/', ParentProfileDetailView.as_view(), name='parent-detail'),
-    path('api/', include('profiles.api.urls')),
+    path('profiles-api/', include('profiles.api.urls')),
 ]

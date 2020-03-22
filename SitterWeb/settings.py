@@ -9,7 +9,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -148,7 +151,12 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
-SOCIALACCOUNT_ADAPTER = 'accounts.views.SocialAccountAdapter'
+
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+# ACCOUNT_EMAIL_REQUIRED = True
+# ACCOUNT_USERNAME_REQUIRED = True
+# ACCOUNT_AUTHENTICATION_METHOD = 'email'
+SOCIALACCOUNT_ADAPTER = 'accounts.adapters.SocialAccountAdapter'
 from .secrets import SOCIAL_AUTH_FACEBOOK_KEY, SOCIAL_AUTH_FACEBOOK_SECRET
 SOCIALACCOUNT_PROVIDERS = {
     'facebook': {
@@ -167,7 +175,10 @@ SOCIALACCOUNT_PROVIDERS = {
             'timezone',
             'link',
             'gender',
+            'birthday',
+            'picture',
             'updated_time',
+            'friends',
         ],
         'EXCHANGE_TOKEN': True,
         'LOCALE_FUNC': lambda request: 'kr_KR',
@@ -214,7 +225,4 @@ LOGIN_REDIRECT_URL ='/'
 REST_USE_JWT = True
 
 
-
-
 from SitterWeb.rest_config.main import *
-

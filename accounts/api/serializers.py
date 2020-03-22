@@ -1,69 +1,51 @@
-import rest_auth.serializers
+import facepy
+from allauth.socialaccount.models import SocialAccount
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from rest_auth.registration.serializers import RegisterSerializer
+from allauth.account.adapter import get_adapter
+from allauth.account.utils import setup_user_email
+User = get_user_model()
 from rest_framework import serializers
-from rest_auth.registration.serializers import SocialLoginSerializer
-from accounts.models import CustomUser
 
 
 class UserSerializer(serializers.ModelSerializer):
     uri = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model = CustomUser
+        model = User
         fields = (
                   'email',
                   'username',
                   'first_name',
                   'last_name',
                   'user_type',
+                  'profile_link',
+                  'birthday',
+                  'gender',
                   'uri',
                   )
+
+    def create(self, validated_data):
+        return User.objects.create_user(**validated_data)
 
     def get_uri(self, obj):
         return "users/user_detail/{pk}".format(pk=obj.pk)
 
-# class FacebookRegisterSerializer(serializers.ModelSerializer):
-#     email = serializers.CharField()
-#     photo = serializers.CharField(required=False, write_only=True)
-#
-#     class Meta:
-#         model = CustomUser
-#         fields = ['id', 'email', 'first_name', 'last_name', 'username', 'idsn']
-#         extra_kwargs = {
-#             'first_name': {'required': False, 'write_only': True},
-#             'last_name': {'required': False, 'write_only': True},
-#             'username': {'write_only': True},
-#             'email': {'write_only': True},
-#             'idsn': {'write_only': True, 'required':True},
-#         }
-#
-#     def create(self, validated_data):
-#         url = validated_data.get('photo')
-#         del validated_data['photo']
-#         user = CustomUser.objects.create_user(type="facebook", **validated_data)
-#
-#         return user
-#
-#
-# class ListFacebookFriendSerializer(serializers.ModelSerializer):
-#
-#     id = serializers.StringRelatedField(source='friend.id')
-#     username = serializers.StringRelatedField(source='friend.username')
-#     first_name = serializers.StringRelatedField(source='friend.first_name')
-#     last_name = serializers.StringRelatedField(source='friend.last_name')
-#     # photo = serializers.StringRelatedField(source='friend.photo.url')
-#     follow = serializers.SerializerMethodField()
-#
-#     def get_follow(self, obj):
-#         return obj.user.follows.filter(follow=obj.friend).exists()
-#         # return Follow.objects.filter(user=obj.user, follow=obj.follow).exists()
-#
-#     class Meta:
-#         model = FacebookFriend
-#         fields = ('username', 'first_name', 'last_name', 'photo', 'follow')
-#
+
 class GenerateFacebookList(serializers.Serializer):
     token = serializers.CharField(required=True)
 
 
+class SignUpSerializer(RegisterSerializer):
+    name = serializers.CharField(required=True, write_only=True)
 
+    def save(self, request):
+        adapter = get_adapter()
+        user = adapter.new_user(request)
+        self.cleaned_data = self.get_cleaned_data()
+        adapter.save_user(request, user, self)
+        setup_user_email(request, user, [])
+        user.save()
+        return user
 

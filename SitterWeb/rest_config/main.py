@@ -29,3 +29,11 @@ JWT_AUTH = {
          'JWT_ALLOW_REFRESH': True,
          'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=600),
          }
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'accounts.api.serializers.SignUpSerializer'
+}
+
+REST_AUTH_SERIALIZERS = {
+    'USER_DETAILS_SERIALIZER': 'accounts.api.serializers.UserSerializer'
+}

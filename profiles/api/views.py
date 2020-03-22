@@ -1,9 +1,6 @@
 from rest_framework import generics, mixins
-
-from accounts.api.serializers import UserSerializer
 from profiles.api.serializers import BabysitterProfileSerializer
 from profiles.models import BabysitterProfile
-from accounts.models import CustomUser
 
 
 class BabysiiterProfileAPIView(mixins.CreateModelMixin, generics.ListAPIView):
@@ -35,5 +32,8 @@ class BabysiiterProfileDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+    def get_serializer_context(self, *args, **kwargs):
+        return {"request": self.request}
 
 

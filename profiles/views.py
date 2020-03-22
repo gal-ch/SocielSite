@@ -96,10 +96,10 @@ class BabysitterProfileCreate(CreateView):
     success_url = 'core:sitter-list'
     fields = ['city', 'age', 'about', 'experienceYears']
 
-    def get_initial(self):
-        return {
-            'email': self.request.user.email
-        }
+    # def get_initial(self):
+    #     return {
+    #         'email': self.request.user.email
+    #     }
 
     def form_valid(self, form):
         form.instance.user = self.request.user

@@ -9,7 +9,6 @@ from django.utils import timezone
 from django.utils.timesince import timesince
 User = get_user_model()
 from accounts.models import CustomUser
-
 ageChoices = [(x, int(x)) for x in range(18, 70)]
 expChoices = [(x, int(x)) for x in range(0, 30)]
 
@@ -63,12 +62,6 @@ class RecommendationsOfSitter(models.Model):
     #     }
     #     data = json.dumps(data)
     #     return data
-
-
-
-
-
-
 
     @property
     def age(self):
