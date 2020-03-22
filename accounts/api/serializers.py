@@ -1,13 +1,10 @@
-import facepy
-from allauth.socialaccount.models import SocialAccount
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_auth.registration.serializers import RegisterSerializer
 from allauth.account.adapter import get_adapter
 from allauth.account.utils import setup_user_email
 User = get_user_model()
 from rest_framework import serializers
-
+from rest_framework.reverse import reverse as api_reverse
 
 class UserSerializer(serializers.ModelSerializer):
     uri = serializers.SerializerMethodField(read_only=True)
@@ -30,7 +27,9 @@ class UserSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
     def get_uri(self, obj):
-        return "users/user_detail/{pk}".format(pk=obj.pk)
+        request = self.context.get('request')
+        return api_reverse('accounts-api:detail', kwargs= {'pk':obj.pk}, request=request)
+        # return "users/user_detail/{pk}".format(pk=obj.pk)
 
 
 class GenerateFacebookList(serializers.Serializer):
