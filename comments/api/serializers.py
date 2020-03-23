@@ -5,7 +5,7 @@ from comments.models import Comment
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
-    image = serializers.SerializerMethodField(read_only=True)
+  #  image = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Comment

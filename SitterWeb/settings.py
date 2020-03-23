@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'SitterWeb.urls'
@@ -151,6 +152,11 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
 
+
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'staticfiles_cdn', 'static_cdn')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'staticfiles_cdn', 'media_cdn')
 
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # ACCOUNT_EMAIL_REQUIRED = True
